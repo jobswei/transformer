@@ -1,7 +1,8 @@
 import torch 
 import torch.nn as nn
 
-
+from ..blocks import *
+from ..layers import *
 class DecoderLayer(nn.Module):
     def __init__(self, self_attention, cross_attention, ffn_layer,norm_layer1,dropout1,norm_layer2,dropout2,norm_layer3,dropout3) -> None:
         super(DecoderLayer,self).__init__()
@@ -42,3 +43,16 @@ class Decoder(nn.Module):
             tgt=layer(tgt,src,tgt_mask,tgt_src_mask)
         
         return tgt
+
+def build_decoder(args):
+    d_model=nn.d_model
+    drop_prob=args.drop_prob
+    self_attention=build_attention(args)
+    cross_attention=build_attention(args)
+    ffn_layer=build_ffn(args)
+    norm_drops=[]
+    for _ in range(3):
+        norm_drops.extend([nn.LayerNorm(d_model,eps=1e-5),nn.Dropout(drop_prob)])
+    decoder_layer=DecoderLayer(self_attention,cross_attention,ffn_layer,*norm_drops)
+    decoder=Decoder(args.num_decoder_layers, decoder_layer)
+    return decoder

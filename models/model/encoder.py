@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 
 from ..blocks import *
+from ..layers import *
 
 class EncoderLayer(nn.Module):
     def __init__(self,ffn_layer,self_attention,norm_layer1,dropout1,norm_layer2,dropout2):
@@ -40,6 +41,13 @@ class Encoder(nn.Module):
 
 
 def build_encoder(args):
-    ffn_layer=None
-    self_attention=bui
-    encoderLayer=EncoderLayer(ffn_layer)
+    d_model=nn.d_model
+    drop_prob=args.drop_prob
+    ffn_layer=build_ffn(args)
+    self_attention=build_attention(args)
+    norm_drops=[]
+    for _ in range(2):
+        norm_drops.extend([nn.LayerNorm(d_model,eps=1e-5),nn.Dropout(drop_prob)])
+    encoderLayer=EncoderLayer(ffn_layer,self_attention,*norm_drops)
+    encoder=Encoder(args.num_encode_layers, encoderLayer)
+    return encoder
