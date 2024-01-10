@@ -41,7 +41,7 @@ class Encoder(nn.Module):
 
 
 def build_encoder(args):
-    d_model=nn.d_model
+    d_model=args.d_model
     drop_prob=args.drop_prob
     ffn_layer=build_ffn(args)
     self_attention=build_attention(args)

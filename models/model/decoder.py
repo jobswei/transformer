@@ -45,7 +45,7 @@ class Decoder(nn.Module):
         return tgt
 
 def build_decoder(args):
-    d_model=nn.d_model
+    d_model=args.d_model
     drop_prob=args.drop_prob
     self_attention=build_attention(args)
     cross_attention=build_attention(args)

@@ -25,12 +25,12 @@ class InputEmbedding(nn.Module):
 
 
 def build_inputEmbedding(mode,args):
-    vocab_len=args.vocab_len
     d_model=args.d_model
     device=args.device
     max_len=args.max_seq_len
     assert mode in ["tgt","src"]
-    pad_idx=args.tgt_vocab_idx if mode=="tgt" else args.src_vocab_idx
+    pad_idx=args.tgt_pad_idx if mode=="tgt" else args.src_pad_idx
+    vocab_len=args.tgt_vocab_size if mode=="tgt" else args.src_vocab_size
 
     token_emb=TokenEmbedding(vocab_len,d_model,pad_idx)
     pos_encode=PositionEncoding(max_len,d_model, device)

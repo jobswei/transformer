@@ -2,7 +2,9 @@ import torch
 import torch.nn as nn
 
 from ..embeddings import *
-from ..model import *
+from .encoder import *
+from .decoder import *
+
 class Transformer(nn.Module):
     def __init__(self,linear,src_embedding,tgt_embedding, encoder,decoder,src_pad_idx,tgt_pad_idx) -> None:
         super(Transformer,self).__init__()
@@ -22,11 +24,8 @@ class Transformer(nn.Module):
         tgt_decode=self.decoder(tgt,src_encode,tgt_mask,src_mask)
         tgt=self.linear(tgt_decode)
         return tgt
-
-
-
     
-    def get_src_mask(self,src):
+    def get_src_mask(self,src:torch.Tensor):
         mask=(src!=self.src_pad_idx).to(torch.float32).unsqueeze(1)
         mask=mask.transpose(1,2)@mask
     def get_tgt_mask(self,tgt):
